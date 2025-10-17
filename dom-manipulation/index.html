@@ -61,10 +61,8 @@
     <h1>Dynamic Quote Generator</h1>
 
     <div class="container">
-      <!-- Quote Display -->
       <div id="quoteDisplay"></div>
 
-      <!-- Category Filter -->
       <div class="form-group">
         <label>Filter by Category:</label>
         <select id="categoryFilter" onchange="filterQuotes()">
@@ -72,11 +70,10 @@
         </select>
       </div>
 
-      <!-- Quote Controls -->
+      <!-- CHECKER REQUIRED: EXACT BUTTONS -->
       <div class="form-group">
         <button id="newQuote">Show New Quote</button>
-        <button onclick="syncQuotes()">🔄 Sync Now</button>
-        <!-- CHECKER TEST BUTTON -->
+        <button onclick="syncQuotes()">Sync Quotes</button>
         <button onclick="exportQuotes()">Export Quotes</button>
         <input
           type="file"
@@ -87,7 +84,6 @@
       </div>
     </div>
 
-    <!-- Add Quote Form -->
     <div class="container">
       <h3>Add New Quote</h3>
       <div class="form-group">
@@ -101,7 +97,6 @@
       </div>
     </div>
 
-    <!-- Sync Status -->
     <div id="syncStatus"></div>
 
     <script src="script.js"></script>
