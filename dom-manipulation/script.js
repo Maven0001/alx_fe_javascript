@@ -169,7 +169,7 @@ async function postQuotesToServer(quotesToPost) {
         body: quote.category,
         userId: 1,
       }),
-      headers: { "Content-type": "application/json" },
+      headers: { "Content-Type": "application/json" },
     });
   }
 }
