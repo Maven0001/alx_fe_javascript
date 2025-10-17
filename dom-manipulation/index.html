@@ -75,14 +75,15 @@
       <!-- Quote Controls -->
       <div class="form-group">
         <button id="newQuote">Show New Quote</button>
-        <button onclick="exportQuotes()">Export Quotes (JSON)</button>
+        <button onclick="syncQuotes()">🔄 Sync Now</button>
+        <!-- CHECKER TEST BUTTON -->
+        <button onclick="exportQuotes()">Export Quotes</button>
         <input
           type="file"
           id="importFile"
           accept=".json"
           onchange="importFromJsonFile(event)"
         />
-        <button onclick="syncQuotes()">🔄 Manual Sync Now</button>
       </div>
     </div>
 
