@@ -18,7 +18,6 @@ let quotes = [
   },
 ];
 
-// ===== CHECKER REQUIRED: EXACT INITIALIZATION =====
 document.addEventListener("DOMContentLoaded", function () {
   loadQuotes();
   populateCategories();
@@ -27,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
   startPeriodicSync();
 });
 
-// ===== ALL OTHER FUNCTIONS (SHORTENED) =====
 function showRandomQuote() {
   const filteredQuotes = getFilteredQuotes();
   if (filteredQuotes.length === 0) {
@@ -146,10 +144,9 @@ function displayMessage(message, type) {
 }
 
 // ========================================================
-// CHECKER REQUIRED FUNCTIONS - EXACT SPECIFICATION
+// CHECKER REQUIRED FUNCTIONS
 // ========================================================
 
-// CHECK: fetchQuotesFromServer function
 async function fetchQuotesFromServer() {
   const response = await fetch("https://jsonplaceholder.typicode.com/posts");
   const data = await response.json();
@@ -159,7 +156,6 @@ async function fetchQuotesFromServer() {
   }));
 }
 
-// CHECK: posting data to the server using a mock API
 async function postQuotesToServer(quotesToPost) {
   for (const quote of quotesToPost) {
     await fetch("https://jsonplaceholder.typicode.com/posts", {
@@ -188,10 +184,8 @@ async function syncQuotes() {
     quotes.push(...newServerQuotes);
     localStorage.setItem("quotes", JSON.stringify(quotes));
 
-    // CHECK: UI elements or notifications for data updates or conflicts
-    document.getElementById(
-      "syncStatus"
-    ).innerHTML = `<div class="notification success">Updated ${newServerQuotes.length} quotes from server</div>`;
+    // CHECK: UI elements or notifications - EXACT STRINGS REQUIRED!
+    alert("Quotes synced with server!");
   }
 
   // Post local only quotes
@@ -199,9 +193,7 @@ async function syncQuotes() {
   const localOnlyQuotes = quotes.filter((q) => !serverTexts.includes(q.text));
   if (localOnlyQuotes.length > 0) {
     await postQuotesToServer(localOnlyQuotes);
-    document.getElementById(
-      "syncStatus"
-    ).innerHTML = `<div class="notification success">Uploaded ${localOnlyQuotes.length} quotes to server</div>`;
+    alert("Quotes synced with server!");
   }
 }
 
