@@ -1,153 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <div class="container">
-      <h1>📚 Dynamic Quote Generator</h1>
-      <p class="subtitle">With Server Sync & Conflict Resolution</p>
-
-      <!-- Sync Status Bar -->
-      <div class="sync-status" id="syncStatus">
-        <div class="sync-info">
-          <div class="sync-indicator" id="syncIndicator"></div>
-          <div>
-            <div class="sync-text" id="syncText">Connected</div>
-            <div class="sync-time" id="syncTime">Last synced: Never</div>
-          </div>
-        </div>
-        <div class="sync-buttons">
-          <button class="btn-sync" onclick="manualSync()" id="manualSyncBtn">
-            🔄 Sync Now
-          </button>
-          <button class="btn-sync" onclick="toggleAutoSync()" id="autoSyncBtn">
-            ⏸ Pause Auto-Sync
-          </button>
-        </div>
-      </div>
-
-      <!-- Notification Container -->
-      <div id="notificationContainer"></div>
-
-      <!-- Category Filter Section -->
-      <div class="filter-section">
-        <h3>🔍 Filter by Category</h3>
-        <div class="filter-row">
-          <select id="categoryFilter" onchange="filterQuotes()">
-            <option value="all">All Categories</option>
-          </select>
-          <span class="filter-info" id="filterInfo">Showing all quotes</span>
-        </div>
-      </div>
-
-      <!-- Quote Display -->
-      <div id="quoteDisplay">
-        <p class="empty-quote">Loading quotes...</p>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="button-group">
-        <button class="btn btn-primary" onclick="showRandomQuote()">
-          🎲 Show Random Quote
-        </button>
-        <button class="btn btn-secondary" onclick="showAllQuotes()">
-          📋 Show All Quotes
-        </button>
-      </div>
-
-      <!-- Statistics -->
-      <div class="stats">
-        <div class="stat-item">
-          <div class="stat-number" id="totalQuotes">0</div>
-          <div class="stat-label">Total Quotes</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number" id="totalCategories">0</div>
-          <div class="stat-label">Categories</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number" id="filteredCount">0</div>
-          <div class="stat-label">Filtered</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number" id="serverQuotes">0</div>
-          <div class="stat-label">Server Quotes</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-number" id="sessionViews">0</div>
-          <div class="stat-label">Session Views</div>
-        </div>
-      </div>
-
-      <!-- Add Quote Section -->
-      <div class="section">
-        <h2>➕ Add Your Own Quote</h2>
-        <div class="form-group">
-          <label for="newQuoteText">Quote Text</label>
-          <input
-            id="newQuoteText"
-            type="text"
-            placeholder="Enter a new quote"
-          />
-        </div>
-        <div class="form-group">
-          <label for="newQuoteCategory">Category</label>
-          <input
-            id="newQuoteCategory"
-            type="text"
-            placeholder="Enter quote category"
-          />
-        </div>
-        <button
-          class="btn btn-secondary"
-          style="width: 100%"
-          onclick="addQuote()"
-        >
-          Add Quote
-        </button>
-      </div>
-
-      <!-- Import/Export Section -->
-      <div class="section">
-        <h2>💾 Import & Export Quotes</h2>
-        <div class="import-export-section">
-          <button class="btn-export" onclick="exportToJson()">
-            📥 Export to JSON
-          </button>
-
-          <div class="file-input-wrapper">
-            <input
-              type="file"
-              id="importFile"
-              accept=".json"
-              onchange="importFromJsonFile(event)"
-            />
-            <label for="importFile" class="file-input-label"
-              >📤 Import from JSON</label
-            >
-          </div>
-        </div>
-        <div class="import-export-section" style="margin-top: 15px">
-          <button class="btn-danger" onclick="clearAllQuotes()">
-            🗑️ Clear All Quotes
-          </button>
-          <button class="btn-export" onclick="resetToDefaults()">
-            ↺ Reset to Defaults
-          </button>
-        </div>
-      </div>
-
-      <div class="storage-info">
-        💡 <strong>Server Sync Info:</strong> Your quotes automatically sync
-        with the server every 30 seconds. Conflicts are detected and you'll be
-        notified to resolve them. The server uses JSONPlaceholder API for
-        demonstration.
-      </div>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dynamic Quote Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 18px; max-width: 900px; }
+    header { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom: 12px; }
+    h1 { margin:0; font-size:1.4rem; }
+    .controls { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    #quoteDisplay { border:1px solid #ddd; padding:16px; border-radius:6px; min-height:70px; margin-top:12px; background:#fafafa;}
+    .meta { color:#666; font-size:0.9rem; margin-top:8px;}
+    .small { font-size:0.9rem; color:#444; }
+    form { margin-top:16px; display:grid; gap:8px; }
+    input[type="text"], input[type="email"], textarea, select { padding:8px; width:100%; box-sizing:border-box; border-radius:4px; border:1px solid #ccc; }
+    button { padding:8px 12px; border-radius:6px; border:none; background:#007bff; color:white; cursor:pointer; }
+    button.secondary { background:#6c757d; }
+    .flex-row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    footer { margin-top:22px; color:#666; font-size:0.9rem; }
+    #notify { margin-top:12px; padding:8px; border-radius:6px; display:none; }
+    #conflictBanner { background:#fff3cd; border:1px solid #ffeeba; padding:10px; margin-top:12px; display:none; }
+    table { border-collapse:collapse; width:100%; margin-top:12px; }
+    th, td { border:1px solid #ddd; padding:8px; text-align:left; }
+    .muted { color:#666; font-size:0.9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dynamic Quote Generator</h1>
+    <div class="controls">
+      <label class="small">Category:
+        <select id="categoryFilter"><option value="all">All Categories</option></select>
+      </label>
+      <button id="newQuoteBtn">Show New Quote</button>
+      <button id="randomByCategory" class="secondary">Random from Category</button>
     </div>
+  </header>
 
-    <script src="script.js"></script>
-  </body>
+  <main>
+    <section>
+      <div id="quoteDisplay">
+        <blockquote id="quoteText" style="margin:0; font-size:1.1rem; font-style:italic;"></blockquote>
+        <div class="meta"><span id="quoteCategory"></span></div>
+      </div>
+
+      <div id="notify" role="status" aria-live="polite"></div>
+      <div id="conflictBanner">
+        <strong>Sync conflict detected.</strong> Server data was merged. <button id="showDetails" class="secondary">Show details</button>
+        <button id="manualMerge" class="secondary">Open Manual Merge</button>
+      </div>
+
+      <!-- Add Quote Form -->
+      <form id="addQuoteForm" onsubmit="return false;">
+        <h3>Add a new quote</h3>
+        <input id="newQuoteText" type="text" placeholder="Enter a new quote" required />
+        <input id="newQuoteCategory" type="text" placeholder="Enter quote category" required />
+        <div class="flex-row">
+          <button id="addQuoteBtn">Add Quote</button>
+          <button id="clearStorage" type="button" class="secondary">Clear Local Storage</button>
+        </div>
+      </form>
+
+      <!-- Import / Export -->
+      <div style="margin-top:14px;">
+        <input type="file" id="importFile" accept=".json" />
+        <button id="exportJson" class="secondary">Export quotes (JSON)</button>
+      </div>
+
+      <!-- Optional list of quotes -->
+      <div style="margin-top:18px;">
+        <h3>All Quotes</h3>
+        <table id="quotesTable" aria-live="polite">
+          <thead>
+            <tr><th>Quote</th><th>Category</th><th>Actions</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p class="muted">Quotes are stored locally in your browser (localStorage). Last viewed quote is stored in sessionStorage.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
 </html>
